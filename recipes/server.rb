@@ -33,6 +33,28 @@ end
 es_ip = ::Logstash.service_ip(node, name, 'elasticsearch')
 
 Chef::Log.info("ElasticSearch IP: #{es_ip}")
+
 logstash_service name do
   action      [:enable]
 end
+
+my_templates = node['logstash']['instance'][name]['config_templates']
+
+if my_templates.nil?
+  my_templates = {
+    'output_elasticsearch' => 'config/output_elasticsearch.conf.erb',
+    'input_syslog' => 'config/input_syslog.conf.erb'
+  }
+end
+
+logstash_config name do
+  templates my_templates
+  action [:create]
+  variables(
+    elasticsearch_ip: es_ip
+  )
+  notifies :restart, "logstash_service[#{name}]"
+end
+
+include_recipe 'kibana'
+
