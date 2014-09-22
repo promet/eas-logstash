@@ -6,6 +6,7 @@ description      'Installs/Configures eas-logstash'
 long_description 'Installs/Configures eas-logstash'
 version          '0.1.0'
 
+depends 'apt'
 depends 'java'
 depends 'curl'
 depends 'elasticsearch'
