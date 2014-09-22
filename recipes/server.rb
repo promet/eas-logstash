@@ -28,7 +28,7 @@ Chef::Application.fatal!("attribute hash node['logstash']['instance']['#{name}']
 
 # these should all default correctly.  listing out for example.
 logstash_instance name do
-  action            :create
+  action :create
 end
 
 directory '/etc/pki/tls/certs' do
@@ -52,7 +52,7 @@ es_ip = ::Logstash.service_ip(node, name, 'elasticsearch')
 Chef::Log.info("ElasticSearch IP: #{es_ip}")
 
 logstash_service name do
-  action      [:enable]
+  action [:enable]
 end
 
 cookbook_file '/etc/pki/tls/private/logstash.key' do
@@ -60,7 +60,7 @@ cookbook_file '/etc/pki/tls/private/logstash.key' do
   owner 'root'
   group 'root'
   mode 0644
-  notifies :restart, "logstash_service[#{name}]" 
+  notifies :restart, "logstash_service[#{name}]"
 end
 
 cookbook_file '/etc/pki/tls/certs/logstash.crt' do
@@ -68,7 +68,7 @@ cookbook_file '/etc/pki/tls/certs/logstash.crt' do
   owner 'root'
   group 'root'
   mode 0644
-  notifies :restart, "logstash_service[#{name}]" 
+  notifies :restart, "logstash_service[#{name}]"
 end
 
 basedir = "#{node['logstash']['instance']['default']['basedir']}/#{name}"
@@ -78,7 +78,7 @@ cookbook_file "#{basedir}/etc/conf.d/input_syslog.conf" do
   owner node['logstash']['instance']['default']['user']
   group node['logstash']['instance']['default']['group']
   mode 0644
-  notifies :restart, "logstash_service[#{name}]" 
+  notifies :restart, "logstash_service[#{name}]"
 end
 
 template "#{basedir}/etc/conf.d/output_elasticsearch.conf" do
@@ -93,4 +93,3 @@ template "#{basedir}/etc/conf.d/output_elasticsearch.conf" do
 end
 
 include_recipe 'kibana'
-
