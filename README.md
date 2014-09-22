@@ -21,7 +21,7 @@ normal['elasticsearch']['download_url']  = [node.elasticsearch[:host], node.elas
 
 ## Usage
 
-This cookbook should part of the loghost role, so a node that runs the eas-base cookbook can find a logstash server via chef-search. In a local environment using test kitchen with chef-solo the loghost will have the IP address 33.33.33.10 assigned to it. 
+This cookbook should be part of the loghost role, so a node that runs the eas-base cookbook can find a logstash server via chef-search. In a local environment using test kitchen with chef-solo the loghost will have the IP address 33.33.33.10 assigned to it. 
 
 To bootstrap a logstash server on AWS you may run a knife command like:
 
