@@ -18,7 +18,7 @@ function (Settings) {
      * elasticsearch host
      * @type {String}
      */
-    elasticsearch: "http://localhost:<%= node['kibana']['elasticsearch']['port'] %>",
+    elasticsearch: "http://localhost:<%= node['kibana']['es_port'] %>",
 
     /**
      * The default ES index to use for storing Kibana specific object

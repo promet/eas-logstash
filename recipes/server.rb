@@ -105,45 +105,24 @@ template "#{basedir}/etc/conf.d/output_elasticsearch.conf" do
   notifies :restart, "logstash_service[#{name}]"
 end
 
-kibana3_home =  File.join(node['kibana']['base_dir'], 'current')
+include_recipe 'eas-logstash::_nginx'
 
-include_recipe 'kibana'
-include_recipe 'nginx'
-
-nginx_site 'default' do
-  enable false
-  notifies :restart, 'service[nginx]'
+kibana_user 'kibana' do
+  name 'kibana'
+  group 'kibana'
+  home '/opt/kibana'
 end
 
-template File.join(node['nginx']['dir'], 'sites-available', 'kibana') do
-  source 'nginx.erb'
-  owner node['nginx']['user']
-  mode '0644'
-  variables(
-    'root' => File.join(node['kibana']['base_dir'], 'current'),
-    'log_dir' => node['nginx']['log_dir'],
-    'listen_http' => node['kibana']['nginx']['listen_http'],
-    'listen_https' => node['kibana']['nginx']['listen_https'],
-    'client_max_body' => node['kibana']['nginx']['client_max_body'],
-    'server_name' => node['kibana']['nginx']['server_name'],
-    'ssl' => node['kibana']['nginx']['ssl'],
-    'ssl_certificate' => node['kibana']['nginx']['ssl_certificate'],
-    'ssl_certificate_key' => node['kibana']['nginx']['ssl_certificate_key'],
-    'ssl_protocols' => node['kibana']['nginx']['ssl_protocols'],
-    'ssl_ciphers' => node['kibana']['nginx']['ssl_ciphers'],
-    'ssl_session_cache' => node['kibana']['nginx']['ssl_session_cache'],
-    'ssl_session_timeout' => node['kibana']['nginx']['ssl_session_timeout']
-  )
+kibana_install 'kibana' do
+  user 'kibana'
+  group 'kibana'
+  install_dir node['kibana']['install_dir']
+  install_type node['kibana']['install_type']
+  action :create
 end
 
-template "#{kibana3_home}/config.js" do
+template "#{node['kibana']['install_dir']}/current/config.js" do
   source 'config.js.erb'
-  owner node['kibana']['user']
-  group node['kibana']['group']
-  mode 0644
-end
-
-nginx_site 'kibana' do
-  enable true
-  notifies :restart, 'service[nginx]' 
+  mode '0644'
+  user 'kibana'
 end
