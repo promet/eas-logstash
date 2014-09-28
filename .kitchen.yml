@@ -16,6 +16,9 @@ platforms:
 
 suites:
   - name: default
+    # data containing credentials for kibana login
+    # kibana_user:test
+    data_bags_path: "test/integration/data_bags"
     run_list:
       - recipe[eas-logstash::server]
     attributes:

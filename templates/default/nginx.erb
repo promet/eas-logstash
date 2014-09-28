@@ -24,12 +24,14 @@ server {
 
   error_log   <%= node['nginx']['log_dir'] %>/kibana-errors.log;
   access_log  <%= node['nginx']['log_dir'] %>/kibana.log;
-
-
   location / {
     root <%= @kibana_dir %>;
     index index.html index.htm;
-  }
+  <% if @passwd %>
+    auth_basic "Restricted";
+    auth_basic_user_file <%= @htpasswd_file %>;
+  <% end %>
+ }
   <% if @passwd %>
   location ~ ^/_aliases$ {
     proxy_pass <%= @es_scheme %><%= @es_server %>:<%= @es_port %>;
@@ -60,10 +62,20 @@ server {
   location ~ ^/kibana-int/dashboard/.*$ {
     proxy_pass <%= @es_scheme %><%= @es_server %>:<%= @es_port %>;
     proxy_read_timeout 90;
+    limit_except GET {
+      proxy_pass <%= @es_scheme %><%= @es_server %>:<%= @es_port %>;
+      auth_basic "Restricted";
+      auth_basic_user_file <%= @htpasswd_file %>; 
+    }
   }
   location ~ ^/kibana-int/temp.*$ {
     proxy_pass <%= @es_scheme %><%= @es_server %>:<%= @es_port %>;
     proxy_read_timeout 90;
+    limit_except GET {
+      proxy_pass <%= @es_scheme %><%= @es_server %>:<%= @es_port %>;
+      auth_basic "Restricted";
+      auth_basic_user_file <%= @htpasswd_file %>; 
+    }
   }
   <% end %>
 }
