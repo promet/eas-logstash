@@ -4,7 +4,7 @@ maintainer_email 'cookbooks@opscale.com'
 license 'Apache 2.0'
 description 'Installs/Configures eas-logstash'
 long_description 'Installs/Configures eas-logstash'
-version '0.1.3'
+version '0.1.4'
 
 depends 'apt'
 depends 'java'
